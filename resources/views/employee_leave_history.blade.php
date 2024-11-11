@@ -28,7 +28,17 @@
                                     <td>{{ $application->leave_from }}</td>
                                     <td>{{ $application->leave_to }}</td>
                                     <td>{{ $application->reason }}</td>
-                                    <td>{{ $application->status }}</td>
+                                    <td>
+                                        <!-- Apply a class based on the status value -->
+                                        <span class="
+                                                    @if ($application->status === 'approved') text-success
+                                                    @elseif ($application->status === 'rejected') text-danger
+                                                    @elseif ($application->status === 'pending') text-warning
+                                                    @endif
+                                                ">
+                                            {{ ucfirst($application->status) }}
+                                        </span>
+                                    </td>
                                     <td>{{ $application->created_at->format('Y-m-d') }}</td>
 
                                 </tr>
