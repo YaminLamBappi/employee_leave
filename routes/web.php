@@ -39,10 +39,20 @@ Route::get('add_employee', [AdminController::class, 'create'])
 Route::post('add_employee', [AdminController::class, 'store']);
 
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
+
+Route::get('profile_update', [ProfileController::class, 'update_profile'])
+    ->name('profile_update');
+Route::put('profile_update', [ProfileController::class, 'profile_update'])
+    ->name('profile_update');
+
+
+Route::get('password_update', [ProfileController::class, 'password_update'])
+    ->name('password_update');
+Route::put('password_update', [ProfileController::class, 'update_pasword'])
+    ->name('password_update');
+
+
+
+Route::get('/profile', [ProfileController::class, 'profile'])->name('profile.edit');
 
 require __DIR__ . '/auth.php';

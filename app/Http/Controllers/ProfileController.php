@@ -2,43 +2,87 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+
+
 
 class ProfileController extends Controller
 {
-    /**
-     * Display the user's profile form.
-     */
 
 
-
-
-    public function edit(Request $request): View
+    public function update_pasword(Request $request)
     {
-        return view('profile.edit', [
-            'user' => $request->user(),
+
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|min:6|confirmed',
         ]);
-    }
 
-    /**
-     * Update the user's profile information.
-     */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
-    {
-        $request->user()->fill($request->validated());
+        $user = User::find(Auth::user()->id);
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        if (!Hash::check($request->current_password, Auth::user()->password)) {
+            return back()->with('error', 'Password Incorrect');
         }
 
-        $request->user()->save();
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        if ($request->current_password === $request->new_password) {
+            return back()->withErrors(['new_password' => 'The new password must be different from the current password.']);
+        }
+
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        $layout = Auth::check() && Auth::user()->role === 'admin' ? 'layouts.admin' : 'layouts.employee';
+
+        return view("profile.password_update", compact('layout'));
+    }
+
+
+
+    public function password_update()
+    {
+        $layout = Auth::check() && Auth::user()->role === 'admin' ? 'layouts.admin' : 'layouts.employee';
+
+        return view("profile.password_update", compact('layout'));
+    }
+
+
+    public function update_profile()
+    {
+        $layout = Auth::check() && Auth::user()->role === 'admin' ? 'layouts.admin' : 'layouts.employee';
+
+        return view("profile.profile_update", compact('layout'));
+    }
+
+    public function profile_update(Request $request)
+    {
+        // Validate the incoming request data
+        // $request->validate([
+        //     'name' => 'required',
+        //     'email' => 'required|email|unique:users,email,' 
+        // ]);
+
+        $user = User::find(Auth::user()->id);
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+
+        $user->save();
+
+        return redirect()->route('profile.edit')->with('success', 'Profile updated successfully.');
+    }
+
+    public function profile(): View
+    {
+        $layout = Auth::check() && Auth::user()->role === 'admin' ? 'layouts.admin' : 'layouts.employee';
+
+        return view('profile.edit', compact('layout'));
     }
 
     /**
