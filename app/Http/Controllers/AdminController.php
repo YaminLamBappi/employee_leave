@@ -14,6 +14,45 @@ use Illuminate\Support\Facades\Auth;
 class AdminController extends Controller
 {
 
+
+    public function employee_delete($id)
+    {
+        $user = User::findOrFail($id);
+        $user->delete();
+
+        return redirect('total_employee')->with('success', 'User Deleted Successfully.');
+    }
+    public function update_employee(Request $request, $id)
+    {
+
+        $user = User::findOrFail($id);
+
+        $request->validate([
+            'email' => 'email',
+        ]);
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->role = $request->role;
+        $user->sick_leave = $request->sick_leave;
+        $user->casual_leave = $request->casual_leave;
+        $user->total_leave = $request->sick_leave + $request->casual_leave;
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return redirect("total_employee")->with('success', 'User Updated Successfully.');
+
+    }
+
+
+
+    public function employee_update($id)
+    {
+
+        $user = User::findOrFail($id);
+        return view("update_employee", compact("user"));
+    }
+
     public function search(Request $request)
     {
         $searchTerm = $request->input('search');
@@ -25,14 +64,14 @@ class AdminController extends Controller
 
     public function total_employee()
     {
-        $total_employee = User::orderBy('name', 'asc')->paginate(10);
+        $total_employee = User::where('role', 'employee')->orderBy('name', 'asc')->paginate(10);
         return view("total_employee", compact("total_employee"));
     }
 
 
     public function admin_leave_history()
     {
-        $leaveApplications = LeaveApplication::with('user')->get();
+        $leaveApplications = LeaveApplication::with('user')->paginate(10);
         return view('admin_leave_history', compact('leaveApplications'));
     }
 
@@ -99,6 +138,7 @@ class AdminController extends Controller
     {
         $userRole = Auth::user()->role;
 
+        // Directly handle the redirection based on the role
         switch ($userRole) {
             case 'admin':
                 return redirect()->route('admin');

@@ -2,7 +2,7 @@
 
 @section('body')
 
-<div class="container mt-5">
+<div class="container mt-5 mr-4">
     <div class="row justify-content-center">
         <div class="col-md-10">
             <div class="card">
@@ -10,6 +10,7 @@
                     <h2>Leave History</h2>
                 </div>
                 <div class="card-body">
+
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -35,11 +36,35 @@
                             @endforeach
                         </tbody>
                     </table>
+                    <div class="d-flex justify-content-center">
+                        <div class="pagination pagination-sm">
+                            {{ $leaveApplications->links() }}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        $('#employee-search').on('keyup', function () {
+            var searchTerm = $(this).val(); // Get the search term
+
+            // Make AJAX request to the server to fetch the filtered employee list
+            $.ajax({
+                url: '{{ route("employee.search") }}',  // Define the route for the search
+                method: 'GET',
+                data: { search: searchTerm },
+                success: function (data) {
+                    $('#employee-list').html(data); // Update the employee list with the filtered data
+                }
+            });
+        });
+    });
+</script>
+
 
 <!-- Bootstrap JS and dependencies -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

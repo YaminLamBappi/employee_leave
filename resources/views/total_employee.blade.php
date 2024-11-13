@@ -5,9 +5,15 @@
 <div class="container mt-5 mr-4">
     <div class="row justify-content-center">
         <div class="col-md-10">
+            @if(session('success'))
+                <div class="alert alert-primary">
+                    {{ session('success') }}
+                </div>
+            @endif
             <div class="card" style="margin-right: auto; margin-left: auto;">
+
                 <div class="card-header text-center">
-                    <h2>All Employee List</h2>
+                    <h2>Employee List</h2>
                 </div>
                 <div class="card-body">
                     <!-- Search Input -->
@@ -34,13 +40,16 @@
                                         <td>{{ $employee->name }}</td>
                                         <td>{{ $employee->email }}</td>
                                         <td>{{ $employee->role }}</td>
-                                        <td>{{ $employee->total_leave - ($employee->sick_leave + $employee->casual_leave) }}
+                                        <td>{{ $employee->sick_leave + $employee->casual_leave }}
                                         </td>
                                         <td>
-                                            <a href="#" class="btn btn-success">
+                                            <a href="{{ route('employee_update', ['id' => $employee->id]) }}"
+                                                class="btn btn-success">
                                                 <i class="fas fa-edit"></i> <!-- Update Icon -->
                                             </a>
-                                            <a href="#" class="btn btn-danger">
+                                            <a href="{{ route('employee_delete', ['id' => $employee->id]) }}"
+                                                class="btn btn-danger"
+                                                onclick="return confirm('Are you sure you want to delete this User?')">
                                                 <i class="fas fa-trash-alt"></i> <!-- Delete Icon -->
                                             </a>
                                         </td>
@@ -68,15 +77,14 @@
 <script>
     $(document).ready(function () {
         $('#employee-search').on('keyup', function () {
-            var searchTerm = $(this).val(); // Get the search term
+            var searchTerm = $(this).val();
 
-            // Make AJAX request to the server to fetch the filtered employee list
             $.ajax({
-                url: '{{ route("employee.search") }}',  // Define the route for the search
+                url: '{{ route("employee.search") }}',
                 method: 'GET',
                 data: { search: searchTerm },
                 success: function (data) {
-                    $('#employee-list').html(data); // Update the employee list with the filtered data
+                    $('#employee-list').html(data);
                 }
             });
         });

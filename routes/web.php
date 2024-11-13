@@ -35,6 +35,12 @@ Route::get('/total_employee', [AdminController::class, 'total_employee'])->name(
 Route::get('/employee/search', [AdminController::class, 'search'])->name('employee.search');
 
 
+Route::get('/employee/update/{id}', [AdminController::class, 'employee_update'])->name('employee_update');
+Route::put('/employee/update/{id}', [AdminController::class, 'update_employee'])->name('employee_update');
+
+
+Route::get('/employee/delete/{id}', [AdminController::class, 'employee_delete'])->name('employee_delete');
+
 
 Route::get('add_employee', [AdminController::class, 'create'])
     ->name('add_employee');
