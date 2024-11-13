@@ -99,7 +99,6 @@ class AdminController extends Controller
     {
         $userRole = Auth::user()->role;
 
-        // Directly handle the redirection based on the role
         switch ($userRole) {
             case 'admin':
                 return redirect()->route('admin');
