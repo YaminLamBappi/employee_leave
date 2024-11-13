@@ -14,6 +14,22 @@ use Illuminate\Support\Facades\Auth;
 class AdminController extends Controller
 {
 
+    public function search(Request $request)
+    {
+        $searchTerm = $request->input('search');
+
+        $employees = User::where('name', 'like', $searchTerm . '%')->get();
+
+        return view('employee_list', compact('employees'));
+    }
+
+    public function total_employee()
+    {
+        $total_employee = User::orderBy('name', 'asc')->paginate(10);
+        return view("total_employee", compact("total_employee"));
+    }
+
+
     public function admin_leave_history()
     {
         $leaveApplications = LeaveApplication::with('user')->get();

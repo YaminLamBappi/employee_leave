@@ -31,6 +31,9 @@ Route::get('reject/{id}', [AdminController::class, 'reject'])->name('reject_leav
 
 Route::get('/admin_leave_history', [AdminController::class, 'admin_leave_history'])->name('admin_leave_history');
 
+Route::get('/total_employee', [AdminController::class, 'total_employee'])->name('total_employee');
+Route::get('/employee/search', [AdminController::class, 'search'])->name('employee.search');
+
 
 
 Route::get('add_employee', [AdminController::class, 'create'])

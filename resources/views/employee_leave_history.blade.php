@@ -29,13 +29,12 @@
                                     <td>{{ $application->leave_to }}</td>
                                     <td>{{ $application->reason }}</td>
                                     <td>
-                                        <!-- Apply a class based on the status value -->
                                         <span class="
-                                                    @if ($application->status === 'approved') text-success
-                                                    @elseif ($application->status === 'rejected') text-danger
-                                                    @elseif ($application->status === 'pending') text-warning
-                                                    @endif
-                                                ">
+                                                        @if ($application->status === 'approved') text-success
+                                                        @elseif ($application->status === 'rejected') text-danger
+                                                        @elseif ($application->status === 'pending') text-warning
+                                                        @endif
+                                                    ">
                                             {{ ucfirst($application->status) }}
                                         </span>
                                     </td>
